@@ -24,16 +24,7 @@ public class Main {
                 .build();
 
         AlphaVantage.api().init(cfg);
-
-        AlphaVantage.api()
-                .timeSeries()
-                .intraday()
-                .forSymbol("FB")
-                .interval(Interval.FIVE_MIN)
-                .outputSize(OutputSize.FULL)
-                .onSuccess(e->handleTimeSeriesSuccess((TimeSeriesResponse) e))
-                .onFailure(e->handleFailure(e))
-                .fetch();
+        StockState.getInstance().updateStockInfo();
 //
 //        AlphaVantage.api()
 //                .timeSeries()
@@ -47,19 +38,5 @@ public class Main {
 
     }
 
-    public void handleTimeSeriesSuccess(TimeSeriesResponse response) {
-        System.out.println("Function");
-        System.out.println(response.toString());
-    }
 
-    public void handleQuoteSuccess(QuoteResponse response) {
-        System.out.println("Function");
-        System.out.println(response.getPrice());
-    }
-
-    public void handleFailure(AlphaVantageException error) {
-
-        System.out.println("Doesn't function");
-        System.out.println(error.getMessage());
-    }
 }
