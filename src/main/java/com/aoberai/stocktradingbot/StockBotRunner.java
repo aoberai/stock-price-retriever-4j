@@ -18,6 +18,7 @@ public class StockBotRunner {
                 .build();
 
         AlphaVantage.api().init(cfg);
-        StockState.getInstance().updateStockInfo();
+
+        System.out.println(StockPriceRetriever.getInstance().getStockPrice(StockPriceRetriever.TimePeriod.NOW, "AAPL", 0));
     }
 }

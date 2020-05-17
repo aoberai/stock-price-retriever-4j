@@ -14,6 +14,8 @@ public class StockState {
     private List<String> mStocksToTrack = List.of("AAPL", "INTC", "AVGO", "FB", "VGT", "GOOG", "AMZN", "TSLA", "NFLX", "SPY", "XLE", "BRK-B", "TSLA", "NVDA", "MSFT", "QCOM", "AMD", "IBM", "CSCO");
     private ArrayList<String> mWatchList;
 
+    private StockState() {}
+
     public static StockState getInstance() {
         return sInstance;
     }
