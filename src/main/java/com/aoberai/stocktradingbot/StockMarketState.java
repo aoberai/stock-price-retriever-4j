@@ -9,14 +9,14 @@ import com.crazzyghost.alphavantage.timeseries.response.TimeSeriesResponse;
 import java.util.ArrayList;
 import java.util.List;
 
-public class StockState {
-    private static StockState sInstance = new StockState();
+public class StockMarketState {
+    private static StockMarketState sInstance = new StockMarketState();
     private List<String> mStocksToTrack = List.of("AAPL", "INTC", "AVGO", "FB", "VGT", "GOOG", "AMZN", "TSLA", "NFLX", "SPY", "XLE", "BRK-B", "TSLA", "NVDA", "MSFT", "QCOM", "AMD", "IBM", "CSCO", "LYFT");
     private ArrayList<String> mWatchList;
 
-    private StockState() {}
+    private StockMarketState() {}
 
-    public static StockState getInstance() {
+    public static StockMarketState getInstance() {
         return sInstance;
     }
 

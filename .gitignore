@@ -98,7 +98,7 @@ fabric.properties
 
 .vscode/
 
-**/com.aoberai.stocktradingbot.StockBotRunner.java
+**/com.aoberai.stocktradingbot.StockBotTester.java
 
 # Package Files #
 *.jar
@@ -139,7 +139,7 @@ gradle
 # End of https://www.gitignore.io/api/java,gradle,intellij
 .idea/
 .vscode
-**/com.aoberai.stocktradingbot.StockBotRunner.java
+**/com.aoberai.stocktradingbot.StockBotTester.java
 bin/**
 *.sh
 

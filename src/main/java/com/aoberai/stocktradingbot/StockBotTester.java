@@ -4,11 +4,11 @@ import com.crazzyghost.alphavantage.AlphaVantage;
 import com.crazzyghost.alphavantage.Config;
 
 
-public class StockBotRunner {
+public class StockBotTester {
 
     public static void main(String[] args) {
-        StockBotRunner stockBotRunner = new StockBotRunner();
-        stockBotRunner.init();
+        StockBotTester stockBotTester = new StockBotTester();
+        stockBotTester.init();
     }
 
     public void init() {
@@ -19,6 +19,6 @@ public class StockBotRunner {
 
         AlphaVantage.api().init(cfg);
 
-        System.out.println(StockPriceRetriever.getInstance().getStockPrice(StockPriceRetriever.TimePeriod.NOW, "AAPL", 0));
+        System.out.println(StockPriceReader.getInstance().getStockPrice(StockPriceReader.TimePeriod.YEAR, "FB", 3));
     }
 }
