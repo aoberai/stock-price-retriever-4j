@@ -17,10 +17,15 @@ public class ForexResponse {
         this.errorMessage = null;
     }
 
-    private ForexResponse(String errorMessage){
+    private ForexResponse(String errorMessage) {
         this.metaData = MetaData.empty();
         this.forexUnits = new ArrayList<>();
         this.errorMessage = errorMessage;
+    }
+
+    public static ForexResponse of(Map<String, Object> stringObjectMap) {
+        Parser parser = new Parser();
+        return parser.parse(stringObjectMap);
     }
 
     public String getErrorMessage() {
@@ -35,9 +40,13 @@ public class ForexResponse {
         return forexUnits;
     }
 
-    public static ForexResponse of(Map<String, Object> stringObjectMap){
-        Parser parser = new Parser();
-        return parser.parse(stringObjectMap);
+    @Override
+    public String toString() {
+        return "ForexResponse{" +
+                "metaData=" + metaData +
+                ", forexUnits=" + forexUnits.size() +
+                ", errorMessage='" + errorMessage + '\'' +
+                '}';
     }
 
     public static class Parser {
@@ -49,12 +58,12 @@ public class ForexResponse {
             Map<String, String> md;
             Map<String, Map<String, String>> stockData;
 
-            try{
+            try {
                 md = (Map<String, String>) stringObjectMap.get(keys.get(0));
-                stockData = (Map<String, Map<String,String>>) stringObjectMap.get(keys.get(1));
+                stockData = (Map<String, Map<String, String>>) stringObjectMap.get(keys.get(1));
 
-            }catch (ClassCastException e){
-                return new ForexResponse((String)stringObjectMap.get(keys.get(0)));
+            } catch (ClassCastException e) {
+                return new ForexResponse((String) stringObjectMap.get(keys.get(0)));
             }
 
 
@@ -68,9 +77,9 @@ public class ForexResponse {
                     md.get("7. Time Zone")
             );
 
-            List<ForexUnit> forexUnits =  new ArrayList<>();
+            List<ForexUnit> forexUnits = new ArrayList<>();
 
-            for (Map.Entry<String,Map<String,String>> e: stockData.entrySet()) {
+            for (Map.Entry<String, Map<String, String>> e : stockData.entrySet()) {
 
                 ForexUnit.Builder forexUnit = new ForexUnit.Builder();
                 Map<String, String> m = e.getValue();
@@ -81,17 +90,7 @@ public class ForexResponse {
                 forexUnit.close(Double.parseDouble(m.get("4. close")));
                 forexUnits.add(forexUnit.build());
             }
-            return  new ForexResponse(metaData, forexUnits);
+            return new ForexResponse(metaData, forexUnits);
         }
-    }
-
-
-    @Override
-    public String toString() {
-        return "ForexResponse{" +
-                "metaData=" + metaData +
-                ", forexUnits=" + forexUnits.size() +
-                ", errorMessage='" + errorMessage + '\'' +
-                '}';
     }
 }

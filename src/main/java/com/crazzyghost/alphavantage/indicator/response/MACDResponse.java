@@ -10,16 +10,21 @@ public class MACDResponse {
     private List<MACDIndicatorUnit> indicatorUnits;
     private String errorMessage;
 
-    private MACDResponse(List<MACDIndicatorUnit> indicatorUnits, MetaData metaData){
+    private MACDResponse(List<MACDIndicatorUnit> indicatorUnits, MetaData metaData) {
         this.metaData = metaData;
         this.indicatorUnits = indicatorUnits;
         this.errorMessage = null;
     }
 
-    private MACDResponse(String errorMessage){
+    private MACDResponse(String errorMessage) {
         this.metaData = new MetaData();
         this.indicatorUnits = new ArrayList<>();
         this.errorMessage = errorMessage;
+    }
+
+    public static MACDResponse of(Map<String, Object> stringObjectMap) {
+        Parser parser = new Parser();
+        return parser.parse(stringObjectMap);
     }
 
     public String getErrorMessage() {
@@ -29,61 +34,10 @@ public class MACDResponse {
     public List<MACDIndicatorUnit> getIndicatorUnits() {
         return indicatorUnits;
     }
-    
+
     public MetaData getMetaData() {
         return metaData;
     }
-    
-    public static MACDResponse of(Map<String, Object> stringObjectMap){
-        Parser parser = new Parser();
-        return parser.parse(stringObjectMap);
-    }
-
-    public static class Parser {
-
-        @SuppressWarnings("unchecked")
-        MACDResponse parse(Map<String, Object> stringObjectMap){
-
-            List<String> keys = new ArrayList<>(stringObjectMap.keySet());
-            Map<String, Object> md;
-            Map<String, Map<String, String>> indicatorData;
-
-            try{
-                md = (Map<String, Object>) stringObjectMap.get(keys.get(0));
-                indicatorData = (Map<String, Map<String,String>>) stringObjectMap.get(keys.get(1));
-
-            }catch (ClassCastException e){
-                return new MACDResponse((String)stringObjectMap.get(keys.get(0)));
-            }
-
-            MetaData metaData = new MetaData(
-                String.valueOf(md.get("1: Symbol")),
-                String.valueOf(md.get("2: Indicator")),
-                String.valueOf(md.get("3: Last Refreshed")),
-                String.valueOf(md.get("4: Interval")),
-                Double.valueOf(String.valueOf(md.get("5.1: Fast Period"))),
-                Double.valueOf(String.valueOf(md.get("5.2: Slow Period"))),
-                Double.valueOf(String.valueOf(md.get("5.3: Signal Period"))),
-                String.valueOf(md.get("6: Series Type")),
-                String.valueOf(md.get("7: Time Zone"))            
-            );
-
-            List<MACDIndicatorUnit> indicatorUnits =  new ArrayList<>();
-
-            for (Map.Entry<String,Map<String,String>> e: indicatorData.entrySet()) {
-                Map<String, String> m = e.getValue();     
-                MACDIndicatorUnit indicatorUnit = new MACDIndicatorUnit(
-                    e.getKey(),
-                    Double.parseDouble(m.get("MACD_Hist")),
-                    Double.parseDouble(m.get("MACD_Signal")),
-                    Double.parseDouble(m.get("MACD"))
-                );
-                indicatorUnits.add(indicatorUnit);
-            }
-            return new MACDResponse(indicatorUnits, metaData);
-        }
-    }
-
 
     @Override
     public String toString() {
@@ -92,6 +46,51 @@ public class MACDResponse {
                 ",indicatorUnits=" + indicatorUnits.size() +
                 ", errorMessage='" + errorMessage + '\'' +
                 '}';
+    }
+
+    public static class Parser {
+
+        @SuppressWarnings("unchecked")
+        MACDResponse parse(Map<String, Object> stringObjectMap) {
+
+            List<String> keys = new ArrayList<>(stringObjectMap.keySet());
+            Map<String, Object> md;
+            Map<String, Map<String, String>> indicatorData;
+
+            try {
+                md = (Map<String, Object>) stringObjectMap.get(keys.get(0));
+                indicatorData = (Map<String, Map<String, String>>) stringObjectMap.get(keys.get(1));
+
+            } catch (ClassCastException e) {
+                return new MACDResponse((String) stringObjectMap.get(keys.get(0)));
+            }
+
+            MetaData metaData = new MetaData(
+                    String.valueOf(md.get("1: Symbol")),
+                    String.valueOf(md.get("2: Indicator")),
+                    String.valueOf(md.get("3: Last Refreshed")),
+                    String.valueOf(md.get("4: Interval")),
+                    Double.valueOf(String.valueOf(md.get("5.1: Fast Period"))),
+                    Double.valueOf(String.valueOf(md.get("5.2: Slow Period"))),
+                    Double.valueOf(String.valueOf(md.get("5.3: Signal Period"))),
+                    String.valueOf(md.get("6: Series Type")),
+                    String.valueOf(md.get("7: Time Zone"))
+            );
+
+            List<MACDIndicatorUnit> indicatorUnits = new ArrayList<>();
+
+            for (Map.Entry<String, Map<String, String>> e : indicatorData.entrySet()) {
+                Map<String, String> m = e.getValue();
+                MACDIndicatorUnit indicatorUnit = new MACDIndicatorUnit(
+                        e.getKey(),
+                        Double.parseDouble(m.get("MACD_Hist")),
+                        Double.parseDouble(m.get("MACD_Signal")),
+                        Double.parseDouble(m.get("MACD"))
+                );
+                indicatorUnits.add(indicatorUnit);
+            }
+            return new MACDResponse(indicatorUnits, metaData);
+        }
     }
 
     public static class MetaData {
@@ -105,17 +104,17 @@ public class MACDResponse {
         private double signalPeriod;
         private String timeZone;
         private String seriesType;
-        
+
         public MetaData(
-            String symbol, 
-            String indicator, 
-            String lastRefreshed, 
-            String interval, 
-            double fastPeriod,
-            double slowPeriod,
-            double signalPeriod, 
-            String seriesType,
-            String timeZone 
+                String symbol,
+                String indicator,
+                String lastRefreshed,
+                String interval,
+                double fastPeriod,
+                double slowPeriod,
+                double signalPeriod,
+                String seriesType,
+                String timeZone
         ) {
             this.symbol = symbol;
             this.indicator = indicator;
@@ -127,12 +126,12 @@ public class MACDResponse {
             this.seriesType = seriesType;
             this.timeZone = timeZone;
         }
-        
-        public MetaData(){
+
+        public MetaData() {
             this("", "", "", "", 12, 26, 9, "", "");
         }
 
-        
+
         public String getSymbol() {
             return symbol;
         }
@@ -177,7 +176,6 @@ public class MACDResponse {
                     + "}";
         }
 
-            
-        
+
     }
 }

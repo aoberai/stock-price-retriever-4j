@@ -19,16 +19,16 @@ public class QuoteResponse {
     private String errorMessage;
 
     public QuoteResponse(
-        String symbol, 
-        double open, 
-        double high, 
-        double low, 
-        double price, 
-        double volume,
-        String latestTradingDay, 
-        double previousClose, 
-        double change, 
-        double changePercent
+            String symbol,
+            double open,
+            double high,
+            double low,
+            double price,
+            double volume,
+            String latestTradingDay,
+            double previousClose,
+            double change,
+            double changePercent
     ) {
         this.symbol = symbol;
         this.open = open;
@@ -42,6 +42,15 @@ public class QuoteResponse {
         this.changePercent = changePercent;
     }
 
+
+    public QuoteResponse(String errorMessage) {
+        this.errorMessage = errorMessage;
+    }
+
+    public static QuoteResponse of(Map<String, Object> stringObjectMap) {
+        Parser parser = new Parser();
+        return parser.parse(stringObjectMap);
+    }
 
     public String getSymbol() {
         return this.symbol;
@@ -87,41 +96,31 @@ public class QuoteResponse {
         return this.errorMessage;
     }
 
-
-    public QuoteResponse(String errorMessage){
-        this.errorMessage = errorMessage;
-    }
-
-    public static QuoteResponse of(Map<String, Object> stringObjectMap){
-        Parser parser = new Parser();
-        return parser.parse(stringObjectMap);
-    }
- 
     public static class Parser {
         @SuppressWarnings("unchecked")
-        QuoteResponse parse(Map<String, Object> stringObjectMap){
+        QuoteResponse parse(Map<String, Object> stringObjectMap) {
             //get the keys
             List<String> keys = new ArrayList<>(stringObjectMap.keySet());
             Map<String, String> data;
-            try{
+            try {
                 data = (Map<String, String>) stringObjectMap.get(keys.get(0));
-            }catch (ClassCastException e){
-                return new QuoteResponse((String)stringObjectMap.get(keys.get(0)));
+            } catch (ClassCastException e) {
+                return new QuoteResponse((String) stringObjectMap.get(keys.get(0)));
             }
 
             String changePercentage = data.get("10. change percent");
-            changePercentage = changePercentage.substring(0, changePercentage.length()-1);
+            changePercentage = changePercentage.substring(0, changePercentage.length() - 1);
             return new QuoteResponse(
-                data.get("01. symbol"),
-                Double.parseDouble(data.get("02. open")),
-                Double.parseDouble(data.get("03. high")),
-                Double.parseDouble(data.get("04. low")),
-                Double.parseDouble(data.get("05. price")),
-                Double.parseDouble(data.get("06. volume")),
-                data.get("07. latest trading day"),
-                Double.parseDouble(data.get("08. previous close")),
-                Double.parseDouble(data.get("09. change")),
-                Double.parseDouble(changePercentage)
+                    data.get("01. symbol"),
+                    Double.parseDouble(data.get("02. open")),
+                    Double.parseDouble(data.get("03. high")),
+                    Double.parseDouble(data.get("04. low")),
+                    Double.parseDouble(data.get("05. price")),
+                    Double.parseDouble(data.get("06. volume")),
+                    data.get("07. latest trading day"),
+                    Double.parseDouble(data.get("08. previous close")),
+                    Double.parseDouble(data.get("09. change")),
+                    Double.parseDouble(changePercentage)
             );
 
         }

@@ -1,12 +1,5 @@
 package forex;
 
-import static org.junit.Assert.assertNotNull;
-
-import java.io.IOException;
-import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.atomic.AtomicReference;
-
 import com.crazzyghost.alphavantage.AlphaVantage;
 import com.crazzyghost.alphavantage.AlphaVantageException;
 import com.crazzyghost.alphavantage.Config;
@@ -15,16 +8,21 @@ import com.crazzyghost.alphavantage.forex.response.ForexResponse;
 import com.crazzyghost.alphavantage.parameters.DataType;
 import com.crazzyghost.alphavantage.parameters.Interval;
 import com.crazzyghost.alphavantage.parameters.OutputSize;
-
-import org.junit.Before;
-import org.junit.Test;
-
 import okhttp3.OkHttpClient;
 import okhttp3.logging.HttpLoggingInterceptor;
 import okhttp3.logging.HttpLoggingInterceptor.Level;
 import okhttp3.mock.Behavior;
 import okhttp3.mock.MockInterceptor;
+import org.junit.Before;
+import org.junit.Test;
 import util.TestUtils;
+
+import java.io.IOException;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicReference;
+
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static util.TestUtils.errorMessage;
 import static util.TestUtils.stream;
@@ -49,33 +47,33 @@ public class ForexTest {
         AlphaVantage.api().init(config);
 
         mockInterceptor.addRule()
-            .get("https://www.alphavantage.co/query?function=FX_MONTHLY&from_symbol=EUR&to_symbol=USD&datatype=json&apikey=demo")
-            .respond(errorMessage)
-            .code(400);
+                .get("https://www.alphavantage.co/query?function=FX_MONTHLY&from_symbol=EUR&to_symbol=USD&datatype=json&apikey=demo")
+                .respond(errorMessage)
+                .code(400);
 
         mockInterceptor.addRule()
-            .get("https://www.alphavantage.co/query?function=FX_MONTHLY&from_symbol=GHS&to_symbol=USD&datatype=json&apikey=demo")
-            .respond(stream("monthly"));
+                .get("https://www.alphavantage.co/query?function=FX_MONTHLY&from_symbol=GHS&to_symbol=USD&datatype=json&apikey=demo")
+                .respond(stream("monthly"));
 
         mockInterceptor.addRule()
-            .get("https://www.alphavantage.co/query?function=FX_WEEKLY&from_symbol=GHS&to_symbol=USD&datatype=json&apikey=demo")
-            .respond(stream("weekly"));
+                .get("https://www.alphavantage.co/query?function=FX_WEEKLY&from_symbol=GHS&to_symbol=USD&datatype=json&apikey=demo")
+                .respond(stream("weekly"));
 
         mockInterceptor.addRule()
-            .get("https://www.alphavantage.co/query?function=FX_DAILY&outputsize=full&from_symbol=EUR&to_symbol=USD&datatype=json&apikey=demo")
-            .respond(stream("daily"));
+                .get("https://www.alphavantage.co/query?function=FX_DAILY&outputsize=full&from_symbol=EUR&to_symbol=USD&datatype=json&apikey=demo")
+                .respond(stream("daily"));
 
         mockInterceptor.addRule()
-            .get("https://www.alphavantage.co/query?function=FX_MONTHLY&from_symbol=AFN&to_symbol=USD&datatype=json&apikey=demo")
-            .respond(errorMessage);
+                .get("https://www.alphavantage.co/query?function=FX_MONTHLY&from_symbol=AFN&to_symbol=USD&datatype=json&apikey=demo")
+                .respond(errorMessage);
 
         mockInterceptor.addRule()
-            .get("https://www.alphavantage.co/query?function=FX_MONTHLY&from_symbol=USD&to_symbol=AFN&datatype=json&apikey=demo")
-            .respond(errorMessage);
+                .get("https://www.alphavantage.co/query?function=FX_MONTHLY&from_symbol=USD&to_symbol=AFN&datatype=json&apikey=demo")
+                .respond(errorMessage);
 
         mockInterceptor.addRule()
-            .get("https://www.alphavantage.co/query?interval=5min&function=FX_INTRADAY&outputsize=full&from_symbol=EUR&to_symbol=USD&datatype=json&apikey=demo")
-            .respond(stream("intraday"));
+                .get("https://www.alphavantage.co/query?interval=5min&function=FX_INTRADAY&outputsize=full&from_symbol=EUR&to_symbol=USD&datatype=json&apikey=demo")
+                .respond(stream("intraday"));
     }
 
     @Test(expected = AlphaVantageException.class)
@@ -94,14 +92,14 @@ public class ForexTest {
         AtomicReference<AlphaVantageException> ref = new AtomicReference<>();
 
         AlphaVantage.api()
-            .forex()
-            .monthly()
-            .fromSymbol("EUR")
-            .toSymbol("USD")
-            .onFailure(e -> {
-                lock.countDown();
-                ref.set(e);
-            }).fetch();
+                .forex()
+                .monthly()
+                .fromSymbol("EUR")
+                .toSymbol("USD")
+                .onFailure(e -> {
+                    lock.countDown();
+                    ref.set(e);
+                }).fetch();
         lock.await();
         assertNotNull(ref.get());
 
@@ -114,22 +112,22 @@ public class ForexTest {
         AtomicReference<ForexResponse> ref = new AtomicReference<>();
 
         AlphaVantage.api()
-            .forex()
-            .monthly()
-            .fromSymbol("GHS")
-            .toSymbol("USD")
-            .dataType(DataType.JSON)
-            .onSuccess(e -> {
-                lock.countDown();
-                ref.set(e);
-            })
-            .fetch();
-            lock.await();
+                .forex()
+                .monthly()
+                .fromSymbol("GHS")
+                .toSymbol("USD")
+                .dataType(DataType.JSON)
+                .onSuccess(e -> {
+                    lock.countDown();
+                    ref.set(e);
+                })
+                .fetch();
+        lock.await();
         assertNotNull(ref.get());
 
     }
 
-    
+
     @Test
     public void testWeekly() throws InterruptedException {
 
@@ -137,17 +135,17 @@ public class ForexTest {
         AtomicReference<ForexResponse> ref = new AtomicReference<>();
 
         AlphaVantage.api()
-            .forex()
-            .weekly()
-            .fromSymbol("GHS")
-            .toSymbol("USD")
-            .dataType(DataType.JSON)
-            .onSuccess(e -> {
-                lock.countDown();
-                ref.set(e);
-            })
-            .fetch();
-            lock.await();
+                .forex()
+                .weekly()
+                .fromSymbol("GHS")
+                .toSymbol("USD")
+                .dataType(DataType.JSON)
+                .onSuccess(e -> {
+                    lock.countDown();
+                    ref.set(e);
+                })
+                .fetch();
+        lock.await();
         assertNotNull(ref.get());
 
     }
@@ -159,18 +157,18 @@ public class ForexTest {
         AtomicReference<ForexResponse> ref = new AtomicReference<>();
 
         AlphaVantage.api()
-            .forex()
-            .daily()
-            .fromSymbol("EUR")
-            .toSymbol("USD")
-            .outputSize(OutputSize.FULL)
-            .dataType(DataType.JSON)
-            .onSuccess(e -> {
-                lock.countDown();
-                ref.set(e);
-            })
-            .fetch();
-            lock.await();
+                .forex()
+                .daily()
+                .fromSymbol("EUR")
+                .toSymbol("USD")
+                .outputSize(OutputSize.FULL)
+                .dataType(DataType.JSON)
+                .onSuccess(e -> {
+                    lock.countDown();
+                    ref.set(e);
+                })
+                .fetch();
+        lock.await();
         assertNotNull(ref.get());
 
     }
@@ -182,14 +180,14 @@ public class ForexTest {
         AtomicReference<ForexResponse> ref = new AtomicReference<>();
 
         AlphaVantage.api()
-            .forex()
-            .monthly()
-            .fromSymbol("AFN")
-            .toSymbol("USD")
-            .dataType(DataType.JSON)
-            .onFailure(e-> lock.countDown())
-            .fetch();
-            lock.await();
+                .forex()
+                .monthly()
+                .fromSymbol("AFN")
+                .toSymbol("USD")
+                .dataType(DataType.JSON)
+                .onFailure(e -> lock.countDown())
+                .fetch();
+        lock.await();
         assertNull(ref.get());
 
     }
@@ -201,14 +199,14 @@ public class ForexTest {
         AtomicReference<AlphaVantageException> ref = new AtomicReference<>();
 
         AlphaVantage.api()
-            .forex()
-            .monthly()
-            .fromSymbol("USD")
-            .toSymbol("AFN")
-            .dataType(DataType.JSON)
-            .onSuccess(e->lock.countDown())
-            .fetch();
-            lock.await();
+                .forex()
+                .monthly()
+                .fromSymbol("USD")
+                .toSymbol("AFN")
+                .dataType(DataType.JSON)
+                .onSuccess(e -> lock.countDown())
+                .fetch();
+        lock.await();
         assertNull(ref.get());
 
     }
@@ -220,19 +218,19 @@ public class ForexTest {
         AtomicReference<ForexResponse> ref = new AtomicReference<>();
 
         AlphaVantage.api()
-            .forex()
-            .intraday()
-            .toSymbol("USD")
-            .fromSymbol("EUR")
-            .dataType(DataType.JSON)
-            .interval(Interval.FIVE_MIN) 
-            .outputSize(OutputSize.FULL) 
-            .onSuccess(e -> {
-                lock.countDown();
-                ref.set(e);
-            })
-            .fetch();
-            lock.await();
+                .forex()
+                .intraday()
+                .toSymbol("USD")
+                .fromSymbol("EUR")
+                .dataType(DataType.JSON)
+                .interval(Interval.FIVE_MIN)
+                .outputSize(OutputSize.FULL)
+                .onSuccess(e -> {
+                    lock.countDown();
+                    ref.set(e);
+                })
+                .fetch();
+        lock.await();
         assertNotNull(ref.get());
 
     }

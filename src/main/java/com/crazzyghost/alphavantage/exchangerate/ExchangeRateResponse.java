@@ -41,11 +41,11 @@ public class ExchangeRateResponse {
         this.errorMessage = null;
     }
 
-    private ExchangeRateResponse(String errorMessage){
+    private ExchangeRateResponse(String errorMessage) {
         this.errorMessage = errorMessage;
     }
 
-    public static ExchangeRateResponse of(Map<String, Object> stringObjectMap){
+    public static ExchangeRateResponse of(Map<String, Object> stringObjectMap) {
         Parser parser = new Parser();
         return parser.parse(stringObjectMap);
     }
@@ -90,6 +90,22 @@ public class ExchangeRateResponse {
         return timeZone;
     }
 
+    @Override
+    public String toString() {
+        return "ExchangeRateResponse{" +
+                "fromCurrencyCode='" + fromCurrencyCode + '\'' +
+                ", fromCurrencyName='" + fromCurrencyName + '\'' +
+                ", toCurrencyCode='" + toCurrencyCode + '\'' +
+                ", toCurrencyName='" + toCurrencyName + '\'' +
+                ", exchangeRate=" + exchangeRate +
+                ", lastRefreshed='" + lastRefreshed + '\'' +
+                ", timeZone='" + timeZone + '\'' +
+                ", bidPrice='" + bidPrice + '\'' +
+                ", askPrice='" + askPrice + '\'' +
+                ", errorMessage='" + errorMessage + '\'' +
+                '}';
+    }
+
     public static class Parser {
 
         @SuppressWarnings("unchecked")
@@ -97,15 +113,15 @@ public class ExchangeRateResponse {
             //get the keys
             List<String> keys = new ArrayList<>(stringObjectMap.keySet());
             Map<String, String> md;
-            try{
+            try {
                 md = (Map<String, String>) stringObjectMap.get(keys.get(0));
 
-            }catch (ClassCastException e){
-                return new ExchangeRateResponse((String)stringObjectMap.get(keys.get(0)));
+            } catch (ClassCastException e) {
+                return new ExchangeRateResponse((String) stringObjectMap.get(keys.get(0)));
             }
 
-            Double bidPrice = md.get("8. Bid Price").equals("-")? null : Double.parseDouble(md.get("8. Bid Price"));
-            Double askPrice = md.get("9. Ask Price").equals("-")? null : Double.parseDouble(md.get("9. Ask Price"));
+            Double bidPrice = md.get("8. Bid Price").equals("-") ? null : Double.parseDouble(md.get("8. Bid Price"));
+            Double askPrice = md.get("9. Ask Price").equals("-") ? null : Double.parseDouble(md.get("9. Ask Price"));
 
             return new ExchangeRateResponse(
                     md.get("1. From_Currency Code"),
@@ -120,21 +136,5 @@ public class ExchangeRateResponse {
             );
 
         }
-    }
-
-    @Override
-    public String toString() {
-        return "ExchangeRateResponse{" +
-                "fromCurrencyCode='" + fromCurrencyCode + '\'' +
-                ", fromCurrencyName='" + fromCurrencyName + '\'' +
-                ", toCurrencyCode='" + toCurrencyCode + '\'' +
-                ", toCurrencyName='" + toCurrencyName + '\'' +
-                ", exchangeRate=" + exchangeRate +
-                ", lastRefreshed='" + lastRefreshed + '\'' +
-                ", timeZone='" + timeZone + '\'' +
-                ", bidPrice='" + bidPrice + '\'' +
-                ", askPrice='" + askPrice+ '\'' +
-                ", errorMessage='" + errorMessage + '\'' +
-                '}';
     }
 }

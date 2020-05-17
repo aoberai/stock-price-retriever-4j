@@ -12,18 +12,22 @@ public class CryptoResponse {
     private String errorMessage;
 
 
-    public CryptoResponse(MetaData metaData, List<CryptoUnit> cryptoUnits){
+    public CryptoResponse(MetaData metaData, List<CryptoUnit> cryptoUnits) {
         this.metaData = metaData;
         this.cryptoUnits = cryptoUnits;
         this.errorMessage = null;
     }
 
-    public CryptoResponse(String errorMessage){
+    public CryptoResponse(String errorMessage) {
         this.metaData = MetaData.empty();
         this.cryptoUnits = new ArrayList<>();
         this.errorMessage = errorMessage;
     }
 
+    public static CryptoResponse of(Map<String, Object> stringObjectMap, String market) {
+        Parser parser = new Parser();
+        return parser.parse(stringObjectMap, market);
+    }
 
     public List<CryptoUnit> getCryptoUnits() {
         return cryptoUnits;
@@ -37,9 +41,13 @@ public class CryptoResponse {
         return errorMessage;
     }
 
-    public static CryptoResponse of(Map<String, Object> stringObjectMap, String market){
-        Parser parser = new Parser();
-        return parser.parse(stringObjectMap, market);
+    @Override
+    public String toString() {
+        return "CryptoResponse{" +
+                "cryptoUnits=" + cryptoUnits.size() +
+                ", metaData=" + metaData +
+                ", errorMessage='" + errorMessage + '\'' +
+                '}';
     }
 
     public static class Parser {
@@ -51,12 +59,12 @@ public class CryptoResponse {
             Map<String, String> md;
             Map<String, Map<String, String>> stockData;
 
-            try{
+            try {
                 md = (Map<String, String>) stringObjectMap.get(keys.get(0));
-                stockData = (Map<String, Map<String,String>>) stringObjectMap.get(keys.get(1));
+                stockData = (Map<String, Map<String, String>>) stringObjectMap.get(keys.get(1));
 
-            }catch (ClassCastException e){
-                return new CryptoResponse((String)stringObjectMap.get(keys.get(0)));
+            } catch (ClassCastException e) {
+                return new CryptoResponse((String) stringObjectMap.get(keys.get(0)));
             }
 
 
@@ -70,14 +78,14 @@ public class CryptoResponse {
                     md.get("7. Time Zone")
             );
 
-            List<CryptoUnit> cryptoUnits =  new ArrayList<>();
+            List<CryptoUnit> cryptoUnits = new ArrayList<>();
 
-            for (Map<String,String> m: stockData.values()) {
+            for (Map<String, String> m : stockData.values()) {
 
                 CryptoUnit.Builder cryptoUnit = new CryptoUnit.Builder();
-                cryptoUnit.open(Double.parseDouble(m.get("1a. open (" + market + ")" )));
-                cryptoUnit.high(Double.parseDouble(m.get("2a. high (" + market + ")" )));
-                cryptoUnit.low(Double.parseDouble(m.get("3a. low (" + market + ")" )));
+                cryptoUnit.open(Double.parseDouble(m.get("1a. open (" + market + ")")));
+                cryptoUnit.high(Double.parseDouble(m.get("2a. high (" + market + ")")));
+                cryptoUnit.low(Double.parseDouble(m.get("3a. low (" + market + ")")));
                 cryptoUnit.close(Double.parseDouble(m.get("4a. close (" + market + ")")));
                 cryptoUnit.openUSD(Double.parseDouble(m.get("1b. open (USD)")));
                 cryptoUnit.highUSD(Double.parseDouble(m.get("2b. high (USD)")));
@@ -88,17 +96,7 @@ public class CryptoResponse {
 
                 cryptoUnits.add(cryptoUnit.build());
             }
-            return  new CryptoResponse(metaData, cryptoUnits);
+            return new CryptoResponse(metaData, cryptoUnits);
         }
-    }
-
-
-    @Override
-    public String toString() {
-        return "CryptoResponse{" +
-                "cryptoUnits=" + cryptoUnits.size() +
-                ", metaData=" + metaData +
-                ", errorMessage='" + errorMessage + '\'' +
-                '}';
     }
 }

@@ -3,10 +3,11 @@ package com.crazzyghost.alphavantage;
 /**
  * Defines an interface for pulling data from the API source.
  * A fetch operation can either fail or succeed
- * @since 1.0.0
+ *
  * @author crazzyghost
+ * @since 1.0.0
  */
-public interface Fetcher{
+public interface Fetcher {
 
     /**
      * Perform a fetch operation
@@ -15,11 +16,13 @@ public interface Fetcher{
 
     /**
      * Callback when the fetch operation succeeds
+     *
      * @param <V> the type of the reponse of the fetch operation
      */
-    interface SuccessCallback<V>{
+    interface SuccessCallback<V> {
         /**
          * Call this method with a response when the fetch operation is successful
+         *
          * @param response response object
          */
         void onSuccess(V response);
@@ -28,10 +31,11 @@ public interface Fetcher{
     /**
      * Callback when the fetch operation fails
      */
-    interface FailureCallback{
+    interface FailureCallback {
         /**
          * Call this method with an exception when the fetch operation fails
-         * @param ex exception 
+         *
+         * @param ex exception
          */
         void onFailure(AlphaVantageException ex);
     }

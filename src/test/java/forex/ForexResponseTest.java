@@ -1,26 +1,20 @@
 package forex;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
-import static util.TestUtils.json;
-import static util.TestUtils.error;
+import com.crazzyghost.alphavantage.forex.response.ForexResponse;
+import org.junit.Before;
+import org.junit.Test;
+import util.TestUtils;
 
 import java.io.IOException;
 
-import com.crazzyghost.alphavantage.forex.response.ForexResponse;
-
-import org.junit.Before;
-import org.junit.Test;
-
-import util.TestUtils;
+import static org.junit.Assert.*;
+import static util.TestUtils.error;
+import static util.TestUtils.json;
 
 public class ForexResponseTest {
-    
-    @Before 
-    public void setUp(){
+
+    @Before
+    public void setUp() {
         TestUtils.forDirectory("forex");
     }
 
@@ -39,7 +33,7 @@ public class ForexResponseTest {
         assertNotEquals(response.getMetaData().getToSymbol(), "");
 
     }
-    
+
     @Test
     public void testForexResponseError() throws IOException {
         ForexResponse response = ForexResponse.of(error());

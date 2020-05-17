@@ -28,8 +28,8 @@ public class MetaData {
         this.timeZone = timeZone;
     }
 
-    public static MetaData empty(){
-        return new MetaData("","","","","","","");
+    public static MetaData empty() {
+        return new MetaData("", "", "", "", "", "", "");
     }
 
     public String getInformation() {

@@ -1,9 +1,5 @@
 package com.crazzyghost.alphavantage.exchangerate;
 
-import java.io.IOException;
-import java.lang.reflect.Type;
-import java.util.Map;
-
 import com.crazzyghost.alphavantage.AlphaVantageException;
 import com.crazzyghost.alphavantage.Config;
 import com.crazzyghost.alphavantage.Fetcher;
@@ -11,13 +7,17 @@ import com.crazzyghost.alphavantage.UrlExtractor;
 import com.squareup.moshi.JsonAdapter;
 import com.squareup.moshi.Moshi;
 import com.squareup.moshi.Types;
-
 import okhttp3.Call;
 import okhttp3.Request;
 import okhttp3.Response;
 
+import java.io.IOException;
+import java.lang.reflect.Type;
+import java.util.Map;
+
 /**
  * Access to Stock Time Series Data
+ *
  * @author crazzyghost
  * @since 1.0.0
  */
@@ -29,18 +29,18 @@ public class ExchangeRate implements Fetcher {
     private Fetcher.SuccessCallback<ExchangeRateResponse> successCallback;
     private Fetcher.FailureCallback failureCallback;
 
-    public ExchangeRate(Config config){
+    public ExchangeRate(Config config) {
         this.config = config;
         this.request = null;
         this.builder = ExchangeRateRequest.builder();
     }
 
-    public ExchangeRate toCurrency(String toCurrency){
+    public ExchangeRate toCurrency(String toCurrency) {
         this.builder.toCurrency(toCurrency);
         return this;
     }
 
-    public ExchangeRate fromCurrency(String fromCurrency){
+    public ExchangeRate fromCurrency(String fromCurrency) {
         this.builder.fromCurrency(fromCurrency);
         return this;
     }
@@ -49,7 +49,7 @@ public class ExchangeRate implements Fetcher {
      * @param callback successful fetch handler
      * @return current instance of {@link ExchangeRateResponse}
      */
-    public ExchangeRate onSuccess(SuccessCallback<ExchangeRateResponse> callback){
+    public ExchangeRate onSuccess(SuccessCallback<ExchangeRateResponse> callback) {
         this.successCallback = callback;
         return this;
     }
@@ -58,7 +58,7 @@ public class ExchangeRate implements Fetcher {
      * @param callback failed fetch handler
      * @return current instance of {@link ExchangeRateResponse}
      */
-    public ExchangeRate onFailure(FailureCallback callback){
+    public ExchangeRate onFailure(FailureCallback callback) {
         this.failureCallback = callback;
         return this;
     }
@@ -66,7 +66,7 @@ public class ExchangeRate implements Fetcher {
     @Override
     public void fetch() {
 
-        if(config == null || config.getKey() == null){
+        if (config == null || config.getKey() == null) {
             throw new AlphaVantageException("Config not set");
         }
         this.request = this.builder.build();
@@ -78,7 +78,7 @@ public class ExchangeRate implements Fetcher {
         config.getOkHttpClient().newCall(request).enqueue(new okhttp3.Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
-                if(failureCallback != null){
+                if (failureCallback != null) {
                     failureCallback.onFailure(new AlphaVantageException());
                     failureCallback = null;
                     successCallback = null;
@@ -87,22 +87,22 @@ public class ExchangeRate implements Fetcher {
 
             @Override
             public void onResponse(Call call, Response response) throws IOException {
-                if(response.isSuccessful()){
+                if (response.isSuccessful()) {
 
                     Moshi moshi = new Moshi.Builder().build();
                     Type type = Types.newParameterizedType(Map.class, String.class, Object.class);
-                    JsonAdapter<Map<String,Object>> adapter = moshi.adapter(type);
+                    JsonAdapter<Map<String, Object>> adapter = moshi.adapter(type);
                     ExchangeRateResponse exchangeResponse = ExchangeRateResponse.of(adapter.fromJson(response.body().string()));
-                    if(exchangeResponse.getErrorMessage() != null){
-                        if(failureCallback != null){
+                    if (exchangeResponse.getErrorMessage() != null) {
+                        if (failureCallback != null) {
                             failureCallback.onFailure(new AlphaVantageException(exchangeResponse.getErrorMessage()));
                         }
                     }
-                    if(successCallback != null)
+                    if (successCallback != null)
                         successCallback.onSuccess(exchangeResponse);
-                }else{
+                } else {
 
-                    if(failureCallback != null){
+                    if (failureCallback != null) {
                         failureCallback.onFailure(new AlphaVantageException());
                     }
                 }

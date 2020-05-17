@@ -17,13 +17,13 @@ public class TimeSeriesResponse {
         this.errorMessage = null;
     }
 
-    private TimeSeriesResponse(String errorMessage){
+    private TimeSeriesResponse(String errorMessage) {
         this.errorMessage = errorMessage;
         this.stockUnits = new ArrayList<>();
         this.metaData = MetaData.empty();
     }
 
-    public static TimeSeriesResponse of(Map<String, Object> stringObjectMap, boolean adjusted){
+    public static TimeSeriesResponse of(Map<String, Object> stringObjectMap, boolean adjusted) {
         Parser parser = new Parser(adjusted);
         return parser.parse(stringObjectMap);
     }
@@ -40,12 +40,21 @@ public class TimeSeriesResponse {
         return stockUnits;
     }
 
+    @Override
+    public String toString() {
+        return "TimeSeriesResponse{" +
+                "metaData=" + metaData +
+                ", stockUnits=" + stockUnits +
+                ", errorMessage='" + errorMessage + '\'' +
+                '}';
+    }
+
     public static class Parser {
 
 
         private boolean adjusted;
 
-        Parser(boolean adjusted){
+        Parser(boolean adjusted) {
             this.adjusted = adjusted;
         }
 
@@ -57,36 +66,36 @@ public class TimeSeriesResponse {
             Map<String, String> md;
             Map<String, Map<String, String>> stockData;
 
-            try{
+            try {
                 md = (Map<String, String>) stringObjectMap.get(keys.get(0));
-                stockData = (Map<String, Map<String,String>>) stringObjectMap.get(keys.get(1));
+                stockData = (Map<String, Map<String, String>>) stringObjectMap.get(keys.get(1));
 
-            }catch (ClassCastException ex){
-                return new TimeSeriesResponse((String)stringObjectMap.get(keys.get(0)));
+            } catch (ClassCastException ex) {
+                return new TimeSeriesResponse((String) stringObjectMap.get(keys.get(0)));
             }
 
             MetaData metaData;
-            if(md.get("4. Interval") == null){
+            if (md.get("4. Interval") == null) {
                 metaData = new MetaData(
-                    md.get("1. Information"),
-                    md.get("2. Symbol"),
-                    md.get("3. Last Refreshed"),
-                    md.get("4. Output Size"),
-                    md.get("5. Time Zone")
+                        md.get("1. Information"),
+                        md.get("2. Symbol"),
+                        md.get("3. Last Refreshed"),
+                        md.get("4. Output Size"),
+                        md.get("5. Time Zone")
                 );
-            }else{
+            } else {
 
                 metaData = new MetaData(
-                    md.get("1. Information"),
-                    md.get("2. Symbol"),
-                    md.get("3. Last Refreshed"),
-                    md.get("4. Interval"),
-                    md.get("5. Output Size"),
-                    md.get("6. Time Zone")
+                        md.get("1. Information"),
+                        md.get("2. Symbol"),
+                        md.get("3. Last Refreshed"),
+                        md.get("4. Interval"),
+                        md.get("5. Output Size"),
+                        md.get("6. Time Zone")
                 );
             }
 
-            List<StockUnit> stockUnits =  new ArrayList<>();
+            List<StockUnit> stockUnits = new ArrayList<>();
 
 
             for (Map.Entry<String, Map<String, String>> e : stockData.entrySet()) {
@@ -111,18 +120,8 @@ public class TimeSeriesResponse {
 
             }
 
-            return  new TimeSeriesResponse(metaData, stockUnits);
+            return new TimeSeriesResponse(metaData, stockUnits);
         }
-    }
-
-
-    @Override
-    public String toString() {
-        return "TimeSeriesResponse{" +
-                "metaData=" + metaData +
-                ", stockUnits=" + stockUnits +
-                ", errorMessage='" + errorMessage + '\'' +
-                '}';
     }
 }
 

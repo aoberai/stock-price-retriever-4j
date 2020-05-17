@@ -10,16 +10,21 @@ public class SeriesResponse {
     private List<SimpleIndicatorUnit> indicatorUnits;
     private String errorMessage;
 
-    private SeriesResponse(List<SimpleIndicatorUnit> indicatorUnits, MetaData metaData){
+    private SeriesResponse(List<SimpleIndicatorUnit> indicatorUnits, MetaData metaData) {
         this.metaData = metaData;
         this.indicatorUnits = indicatorUnits;
         this.errorMessage = null;
     }
 
-    private SeriesResponse(String errorMessage){
+    private SeriesResponse(String errorMessage) {
         this.metaData = new MetaData();
         this.indicatorUnits = new ArrayList<>();
         this.errorMessage = errorMessage;
+    }
+
+    public static SeriesResponse of(Map<String, Object> stringObjectMap, String indicatorKey) {
+        Parser parser = new Parser();
+        return parser.parse(stringObjectMap, indicatorKey);
     }
 
     public String getErrorMessage() {
@@ -29,57 +34,10 @@ public class SeriesResponse {
     public List<SimpleIndicatorUnit> getIndicatorUnits() {
         return indicatorUnits;
     }
-    
+
     public MetaData getMetaData() {
         return metaData;
     }
-    
-    public static SeriesResponse of(Map<String, Object> stringObjectMap, String indicatorKey){
-        Parser parser = new Parser();
-        return parser.parse(stringObjectMap, indicatorKey);
-    }
-
-    public static class Parser {
-
-        @SuppressWarnings("unchecked")
-        SeriesResponse parse(Map<String, Object> stringObjectMap, String indicatorKey){
-
-            List<String> keys = new ArrayList<>(stringObjectMap.keySet());
-
-            Map<String, Object> md;
-            Map<String, Map<String, String>> indicatorData;
-
-            try{
-                md = (Map<String, Object>) stringObjectMap.get(keys.get(0));
-                indicatorData = (Map<String, Map<String,String>>) stringObjectMap.get(keys.get(1));
-            }catch (ClassCastException e){
-                return new SeriesResponse((String)stringObjectMap.get(keys.get(0)));
-            }
-
-            MetaData metaData = new MetaData(
-                String.valueOf(md.get("1: Symbol")),
-                String.valueOf(md.get("2: Indicator")),
-                String.valueOf(md.get("3: Last Refreshed")),
-                String.valueOf(md.get("4: Interval")),
-                String.valueOf(md.get("5: Series Type")),
-                String.valueOf(md.get("6: Time Zone"))
-            );
-
-            List<SimpleIndicatorUnit> indicatorUnits =  new ArrayList<>();
-
-            for (Map.Entry<String,Map<String,String>> e: indicatorData.entrySet()) {
-                Map<String, String> m = e.getValue();     
-                SimpleIndicatorUnit indicatorUnit = new SimpleIndicatorUnit(
-                    e.getKey(),
-                    Double.parseDouble(m.get(indicatorKey)),
-                    indicatorKey
-                );
-                indicatorUnits.add(indicatorUnit);
-            }
-            return new SeriesResponse(indicatorUnits, metaData);
-        }
-    }
-
 
     @Override
     public String toString() {
@@ -90,6 +48,47 @@ public class SeriesResponse {
                 '}';
     }
 
+    public static class Parser {
+
+        @SuppressWarnings("unchecked")
+        SeriesResponse parse(Map<String, Object> stringObjectMap, String indicatorKey) {
+
+            List<String> keys = new ArrayList<>(stringObjectMap.keySet());
+
+            Map<String, Object> md;
+            Map<String, Map<String, String>> indicatorData;
+
+            try {
+                md = (Map<String, Object>) stringObjectMap.get(keys.get(0));
+                indicatorData = (Map<String, Map<String, String>>) stringObjectMap.get(keys.get(1));
+            } catch (ClassCastException e) {
+                return new SeriesResponse((String) stringObjectMap.get(keys.get(0)));
+            }
+
+            MetaData metaData = new MetaData(
+                    String.valueOf(md.get("1: Symbol")),
+                    String.valueOf(md.get("2: Indicator")),
+                    String.valueOf(md.get("3: Last Refreshed")),
+                    String.valueOf(md.get("4: Interval")),
+                    String.valueOf(md.get("5: Series Type")),
+                    String.valueOf(md.get("6: Time Zone"))
+            );
+
+            List<SimpleIndicatorUnit> indicatorUnits = new ArrayList<>();
+
+            for (Map.Entry<String, Map<String, String>> e : indicatorData.entrySet()) {
+                Map<String, String> m = e.getValue();
+                SimpleIndicatorUnit indicatorUnit = new SimpleIndicatorUnit(
+                        e.getKey(),
+                        Double.parseDouble(m.get(indicatorKey)),
+                        indicatorKey
+                );
+                indicatorUnits.add(indicatorUnit);
+            }
+            return new SeriesResponse(indicatorUnits, metaData);
+        }
+    }
+
     public static class MetaData {
 
         private String symbol;
@@ -98,18 +97,18 @@ public class SeriesResponse {
         private String interval;
         private String seriesType;
         private String timeZone;
-     
-        public MetaData(){
+
+        public MetaData() {
             this("", "", "", "", "", "");
         }
 
         public MetaData(
-            String symbol, 
-            String indicator, 
-            String lastRefreshed, 
-            String interval, 
-            String seriesType, 
-            String timeZone
+                String symbol,
+                String indicator,
+                String lastRefreshed,
+                String interval,
+                String seriesType,
+                String timeZone
         ) {
             this.symbol = symbol;
             this.indicator = indicator;
@@ -149,7 +148,7 @@ public class SeriesResponse {
                     + ", seriesType=" + seriesType + ", symbol=" + symbol + ", timeZone=" + timeZone + "}";
         }
 
-        
+
     }
 }
 

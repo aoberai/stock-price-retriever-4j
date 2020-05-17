@@ -26,68 +26,6 @@ public class StockUnit {
         this.dateTime = builder.dateTime;
     }
 
-
-    public static class Builder{
-
-        double open;
-        double high;
-        double low;
-        double close;
-        double adjustedClose;
-        long volume;
-        double dividendAmount;
-        double splitCoefficient;
-        String dateTime;
-
-        public Builder open(double open){
-            this.open = open;
-            return this;
-        }
-
-        public Builder high(double high){
-            this.high = high;
-            return this;
-        }
-        public Builder low(double low){
-            this.low = low;
-            return this;
-        }
-
-        public Builder close(double close){
-            this.close = close;
-            return this;
-        }
-        public Builder adjustedClose(double close){
-            this.adjustedClose = close;
-            return this;
-        }
-
-        public Builder dividendAmount(double dividendAmount){
-            this.dividendAmount = dividendAmount;
-            return this;
-        }
-
-        public Builder volume(long volume){
-            this.volume = volume;
-            return this;
-        }
-
-        public Builder splitCoefficient(double splitCoefficient){
-            this.splitCoefficient = splitCoefficient;
-            return this;
-        }
-
-        public Builder time(String dateTime){
-            this.dateTime = dateTime;
-            return this;
-        }
-
-
-        public StockUnit build(){
-            return new StockUnit(this);
-        }
-    }
-
     public double getOpen() {
         return open;
     }
@@ -137,5 +75,68 @@ public class StockUnit {
                 ", splitCoefficient=" + splitCoefficient +
                 ", date=" + dateTime +
                 '}';
+    }
+
+    public static class Builder {
+
+        double open;
+        double high;
+        double low;
+        double close;
+        double adjustedClose;
+        long volume;
+        double dividendAmount;
+        double splitCoefficient;
+        String dateTime;
+
+        public Builder open(double open) {
+            this.open = open;
+            return this;
+        }
+
+        public Builder high(double high) {
+            this.high = high;
+            return this;
+        }
+
+        public Builder low(double low) {
+            this.low = low;
+            return this;
+        }
+
+        public Builder close(double close) {
+            this.close = close;
+            return this;
+        }
+
+        public Builder adjustedClose(double close) {
+            this.adjustedClose = close;
+            return this;
+        }
+
+        public Builder dividendAmount(double dividendAmount) {
+            this.dividendAmount = dividendAmount;
+            return this;
+        }
+
+        public Builder volume(long volume) {
+            this.volume = volume;
+            return this;
+        }
+
+        public Builder splitCoefficient(double splitCoefficient) {
+            this.splitCoefficient = splitCoefficient;
+            return this;
+        }
+
+        public Builder time(String dateTime) {
+            this.dateTime = dateTime;
+            return this;
+        }
+
+
+        public StockUnit build() {
+            return new StockUnit(this);
+        }
     }
 }

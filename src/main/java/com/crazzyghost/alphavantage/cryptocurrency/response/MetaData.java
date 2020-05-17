@@ -28,8 +28,8 @@ public class MetaData {
     }
 
 
-    public static MetaData empty(){
-        return new MetaData("","","","", "", "", "");
+    public static MetaData empty() {
+        return new MetaData("", "", "", "", "", "", "");
     }
 
     public String getDigitalCurrencyCode() {
@@ -43,7 +43,7 @@ public class MetaData {
     public String getInformation() {
         return information;
     }
-    
+
     public String getLastRefreshed() {
         return lastRefreshed;
     }
@@ -55,11 +55,11 @@ public class MetaData {
     public String getMarketCode() {
         return marketCode;
     }
-    
+
     public String getMarketName() {
         return marketName;
     }
-    
+
 
     @Override
     public String toString() {

@@ -17,7 +17,7 @@ public class MetaData {
         this.outputSize = outputSize;
         this.timeZone = timeZone;
     }
-    
+
     public MetaData(String information, String symbol, String lastRefreshed, String outputSize, String timeZone) {
         this.information = information;
         this.symbol = symbol;
@@ -26,9 +26,10 @@ public class MetaData {
         this.timeZone = timeZone;
     }
 
-    public static MetaData empty(){
-        return new MetaData("","","","", "", "");
+    public static MetaData empty() {
+        return new MetaData("", "", "", "", "", "");
     }
+
     public String getInformation() {
         return information;
     }
