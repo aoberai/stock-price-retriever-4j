@@ -17,14 +17,11 @@ import java.util.Date;
 public class StockPriceReader {
     private static StockPriceReader sInstance = new StockPriceReader();
 
-    private StockPriceReader() {}
+    private StockPriceReader() {
+    }
 
     public static StockPriceReader getInstance() {
         return sInstance;
-    }
-
-    public enum TimePeriod {
-        YEAR, MONTH, DAY, HOUR, MINUTE, NOW;
     }
 
     public double getStockPrice(TimePeriod timePeriod, String tickerSymbol, int amount) {
@@ -35,15 +32,15 @@ public class StockPriceReader {
         switch (timePeriod) {
             case YEAR: {
                 calendar.add(Calendar.YEAR, -amount);
-                String reformattedDate = ( new SimpleDateFormat( "yyyy-MM-dd HH:mm:ss" ) ).format( calendar.getTime() ); //Formats date into "yyyy-MM-dd HH:mm:ss" format
+                String reformattedDate = (new SimpleDateFormat("yyyy-MM-dd HH:mm:ss")).format(calendar.getTime()); //Formats date into "yyyy-MM-dd HH:mm:ss" format
                 AlphaVantage.api()
                         .timeSeries()
                         .monthly()
                         .adjusted()
                         .forSymbol(tickerSymbol)
-                        .onSuccess(e-> {
+                        .onSuccess(e -> {
                             System.out.println(amount + " years before: " + reformattedDate);
-                            for (StockUnit stockUnit : ((TimeSeriesResponse)e).getStockUnits()) {
+                            for (StockUnit stockUnit : ((TimeSeriesResponse) e).getStockUnits()) {
                                 if (stockUnit.getDate().compareTo(reformattedDate) <= 0) {
                                     System.out.println(stockUnit.toString());
                                     retVal[0] = stockUnit.getAdjustedClose();
@@ -51,21 +48,21 @@ public class StockPriceReader {
                                 }
                             }
                         })
-                        .onFailure(e->handleFailure(e))
+                        .onFailure(e -> handleFailure(e))
                         .fetch();
                 break;
-        }
+            }
             case MONTH: {
                 calendar.add(Calendar.MONTH, -amount);
-                String reformattedDate = ( new SimpleDateFormat( "yyyy-MM-dd HH:mm:ss" ) ).format( calendar.getTime() ); //Formats date into "yyyy-MM-dd HH:mm:ss" format
+                String reformattedDate = (new SimpleDateFormat("yyyy-MM-dd HH:mm:ss")).format(calendar.getTime()); //Formats date into "yyyy-MM-dd HH:mm:ss" format
                 AlphaVantage.api()
                         .timeSeries()
                         .weekly()
                         .adjusted()
                         .forSymbol(tickerSymbol)
-                        .onSuccess(e-> {
-                            System.out.println(amount +" month before: " + reformattedDate);
-                            for (StockUnit stockUnit : ((TimeSeriesResponse)e).getStockUnits()) {
+                        .onSuccess(e -> {
+                            System.out.println(amount + " month before: " + reformattedDate);
+                            for (StockUnit stockUnit : ((TimeSeriesResponse) e).getStockUnits()) {
                                 if (stockUnit.getDate().compareTo(reformattedDate) <= 0) {
                                     System.out.println(stockUnit.toString());
                                     retVal[0] = stockUnit.getAdjustedClose();
@@ -73,13 +70,13 @@ public class StockPriceReader {
                                 }
                             }
                         })
-                        .onFailure(e->handleFailure(e))
+                        .onFailure(e -> handleFailure(e))
                         .fetch();
                 break;
             }
             case DAY: {
                 calendar.add(Calendar.DATE, -amount);
-                String reformattedDate = ( new SimpleDateFormat( "yyyy-MM-dd HH:mm:ss" ) ).format( calendar.getTime() ); //Formats date into "yyyy-MM-dd HH:mm:ss" format
+                String reformattedDate = (new SimpleDateFormat("yyyy-MM-dd HH:mm:ss")).format(calendar.getTime()); //Formats date into "yyyy-MM-dd HH:mm:ss" format
                 reformattedDate = reformattedDate.substring(0, 11) + calendar.get(Calendar.HOUR_OF_DAY) + reformattedDate.substring(13); //Converts to 24 hr time
                 String finalReformattedDate = reformattedDate;
                 AlphaVantage.api()
@@ -88,9 +85,9 @@ public class StockPriceReader {
                         .adjusted()
                         .forSymbol(tickerSymbol)
                         .outputSize(OutputSize.FULL)
-                        .onSuccess(e-> {
-                            System.out.println(amount +" days before: " + finalReformattedDate);
-                            for (StockUnit stockUnit : ((TimeSeriesResponse)e).getStockUnits()) {
+                        .onSuccess(e -> {
+                            System.out.println(amount + " days before: " + finalReformattedDate);
+                            for (StockUnit stockUnit : ((TimeSeriesResponse) e).getStockUnits()) {
                                 if (stockUnit.getDate().compareTo(finalReformattedDate) <= 0) {
                                     System.out.println(stockUnit.toString());
                                     retVal[0] = stockUnit.getAdjustedClose();
@@ -98,7 +95,7 @@ public class StockPriceReader {
                                 }
                             }
                         })
-                        .onFailure(e->handleFailure(e))
+                        .onFailure(e -> handleFailure(e))
                         .fetch();
                 break;
             }
@@ -128,7 +125,7 @@ public class StockPriceReader {
             }
             case MINUTE: {
                 calendar.add(Calendar.MINUTE, -amount);
-                String reformattedDate = ( new SimpleDateFormat( "yyyy-MM-dd HH:mm:ss" ) ).format( calendar.getTime() ); //Formats date into "yyyy-MM-dd HH:mm:ss" format
+                String reformattedDate = (new SimpleDateFormat("yyyy-MM-dd HH:mm:ss")).format(calendar.getTime()); //Formats date into "yyyy-MM-dd HH:mm:ss" format
                 reformattedDate = reformattedDate.substring(0, 11) + calendar.get(Calendar.HOUR_OF_DAY) + reformattedDate.substring(13); //Converts to 24 hr time
                 String finalReformattedDate = reformattedDate;
                 AlphaVantage.api()
@@ -137,16 +134,16 @@ public class StockPriceReader {
                         .forSymbol(tickerSymbol)
                         .outputSize(OutputSize.FULL)
                         .interval(Interval.ONE_MIN)
-                        .onSuccess(e-> {
+                        .onSuccess(e -> {
 //                            System.out.println(amount +" hour before: " + finalReformattedDate);
-                            for (StockUnit stockUnit : ((TimeSeriesResponse)e).getStockUnits()) {
+                            for (StockUnit stockUnit : ((TimeSeriesResponse) e).getStockUnits()) {
                                 if (stockUnit.getDate().compareTo(finalReformattedDate) <= 0) {
                                     retVal[0] = stockUnit.getClose();
                                     break;
                                 }
                             }
                         })
-                        .onFailure(e->handleFailure(e))
+                        .onFailure(e -> handleFailure(e))
                         .fetch();
                 break;
             }
@@ -171,5 +168,9 @@ public class StockPriceReader {
     public void handleFailure(AlphaVantageException error) {
         System.out.println("Doesn't function");
         System.out.println(error.getMessage());
+    }
+
+    public enum TimePeriod {
+        YEAR, MONTH, DAY, HOUR, MINUTE, NOW;
     }
 }

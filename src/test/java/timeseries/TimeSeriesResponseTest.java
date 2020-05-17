@@ -1,26 +1,21 @@
 package timeseries;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotEquals;
-import static org.junit.Assert.assertNotNull;
+import com.crazzyghost.alphavantage.timeseries.response.QuoteResponse;
+import com.crazzyghost.alphavantage.timeseries.response.TimeSeriesResponse;
+import org.junit.Before;
+import org.junit.Test;
+import util.TestUtils;
 
 import java.io.IOException;
 
-import com.crazzyghost.alphavantage.timeseries.response.QuoteResponse;
-import com.crazzyghost.alphavantage.timeseries.response.TimeSeriesResponse;
-
-import org.junit.Before;
-import org.junit.Test;
-
-import util.TestUtils;
-import static util.TestUtils.json;
+import static org.junit.Assert.*;
 import static util.TestUtils.error;
+import static util.TestUtils.json;
 
 public class TimeSeriesResponseTest {
 
-    @Before 
-    public void setUp(){
+    @Before
+    public void setUp() {
         TestUtils.forDirectory("timeseries");
     }
 
@@ -72,7 +67,7 @@ public class TimeSeriesResponseTest {
         assertNotNull(response.getErrorMessage());
         assertFalse(response.toString().matches("(.*), errorMessage='null'(.*)"));
     }
- 
+
     @Test
     public void testGlobalQuoteResponse() throws IOException {
         QuoteResponse response = QuoteResponse.of(json("globalquote"));

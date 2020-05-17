@@ -1,28 +1,27 @@
 package timeseries;
 
+import com.crazzyghost.alphavantage.timeseries.response.StockUnit;
+import org.junit.Test;
+
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
-
-import com.crazzyghost.alphavantage.timeseries.response.StockUnit;
-
-import org.junit.Test;
 
 public class StockUnitTest {
 
     @Test
-    public void testStockUnit(){
+    public void testStockUnit() {
 
         StockUnit unit = new StockUnit.Builder()
-            .open(1.0)
-            .close(2.0)
-            .high(3.0)
-            .low(4.0)
-            .volume(5l)
-            .adjustedClose(6.0)
-            .dividendAmount(7.0)
-            .splitCoefficient(8.0)
-            .time("20-05-2099")
-            .build();
+                .open(1.0)
+                .close(2.0)
+                .high(3.0)
+                .low(4.0)
+                .volume(5l)
+                .adjustedClose(6.0)
+                .dividendAmount(7.0)
+                .splitCoefficient(8.0)
+                .time("20-05-2099")
+                .build();
 
         assertEquals(unit.getOpen(), 1.0, 0.0);
         assertEquals(unit.getClose(), 2.0, 0.0);

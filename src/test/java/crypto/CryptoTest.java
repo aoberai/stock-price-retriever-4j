@@ -1,33 +1,28 @@
 package crypto;
 
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static util.TestUtils.cryptoRatingUrl;
-import static util.TestUtils.cryptoUrl;
-import static util.TestUtils.errorMessage;
-import static util.TestUtils.stream;
-
-import java.io.IOException;
-import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.atomic.AtomicReference;
-
 import com.crazzyghost.alphavantage.AlphaVantage;
 import com.crazzyghost.alphavantage.AlphaVantageException;
 import com.crazzyghost.alphavantage.Config;
 import com.crazzyghost.alphavantage.cryptocurrency.Crypto;
 import com.crazzyghost.alphavantage.cryptocurrency.response.CryptoResponse;
 import com.crazzyghost.alphavantage.cryptocurrency.response.RatingResponse;
-
-import org.junit.Before;
-import org.junit.Test;
-
 import okhttp3.OkHttpClient;
 import okhttp3.logging.HttpLoggingInterceptor;
 import okhttp3.logging.HttpLoggingInterceptor.Level;
 import okhttp3.mock.Behavior;
 import okhttp3.mock.MockInterceptor;
+import org.junit.Before;
+import org.junit.Test;
 import util.TestUtils;
+
+import java.io.IOException;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicReference;
+
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static util.TestUtils.*;
 
 public class CryptoTest {
 

@@ -1,26 +1,21 @@
 package crypto;
 
-import java.io.IOException;
-
 import com.crazzyghost.alphavantage.cryptocurrency.response.CryptoResponse;
 import com.crazzyghost.alphavantage.cryptocurrency.response.RatingResponse;
-
 import org.junit.Before;
 import org.junit.Test;
-
 import util.TestUtils;
-import static util.TestUtils.json;
+
+import java.io.IOException;
+
+import static org.junit.Assert.*;
 import static util.TestUtils.error;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static util.TestUtils.json;
 
 public class CryptoResponseTest {
 
     @Before
-    public void setUp(){
+    public void setUp() {
         TestUtils.forDirectory("crypto");
     }
 
@@ -39,7 +34,7 @@ public class CryptoResponseTest {
         assertNotEquals(response.getMetaData().getTimeZone(), "");
 
     }
-    
+
     @Test
     public void testDigitalCurrencyResponseError() throws IOException {
         CryptoResponse response = CryptoResponse.of(error(), "CNY");
@@ -59,10 +54,10 @@ public class CryptoResponseTest {
         assertEquals(response.getUtilityScore(), "951");
         assertEquals(response.getLastRefreshed(), "2020-05-03 00:00:00");
         assertEquals(response.getTimeZone(), "UTC");
-        assertFalse(response.toString().matches("(.*), errorMessage='null'(.*)"));        
+        assertFalse(response.toString().matches("(.*), errorMessage='null'(.*)"));
 
     }
-    
+
     @Test
     public void testHealthIndexResponseError() throws IOException {
         RatingResponse response = RatingResponse.of(error());

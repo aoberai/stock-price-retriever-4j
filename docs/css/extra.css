@@ -20,11 +20,11 @@
 }
 
 body, input {
-    font-family: cash-market,"Helvetica Neue",helvetica,sans-serif;
+    font-family: cash-market, "Helvetica Neue", helvetica, sans-serif;
 }
 
 .md-typeset h1, .md-typeset h2, .md-typeset h3, .md-typeset h4 {
-    font-family: cash-market,"Helvetica Neue",helvetica,sans-serif;
+    font-family: cash-market, "Helvetica Neue", helvetica, sans-serif;
     line-height: normal;
     font-weight: bold;
     color: #353535;
