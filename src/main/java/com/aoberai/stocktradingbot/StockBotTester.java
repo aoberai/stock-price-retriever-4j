@@ -19,6 +19,6 @@ public class StockBotTester {
 
         AlphaVantage.api().init(cfg);
 
-        System.out.println(StockPriceReader.getInstance().getStockPrice(StockPriceReader.TimePeriod.YEAR, "FB", 3));
+        System.out.println("\n\n\nStock Price: " + StockPriceReader.getInstance().getStockPrice(StockPriceReader.TimePeriod.MONTH, "AAPL", 6));
     }
 }

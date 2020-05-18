@@ -32,21 +32,24 @@ public class StockPriceReader {
         switch (timePeriod) {
             case YEAR: {
                 calendar.add(Calendar.YEAR, -amount);
-                String reformattedDate = (new SimpleDateFormat("yyyy-MM-dd HH:mm:ss")).format(calendar.getTime()); //Formats date into "yyyy-MM-dd HH:mm:ss" format
+                System.out.println(amount + " years before: " + calendar.get(Calendar.YEAR));
+
                 AlphaVantage.api()
                         .timeSeries()
                         .monthly()
                         .adjusted()
                         .forSymbol(tickerSymbol)
                         .onSuccess(e -> {
-                            System.out.println(amount + " years before: " + reformattedDate);
+                            double stockPriceSum = 0;
+                            int stockUnitCount = 0;
                             for (StockUnit stockUnit : ((TimeSeriesResponse) e).getStockUnits()) {
-                                if (stockUnit.getDate().compareTo(reformattedDate) <= 0) {
-                                    System.out.println(stockUnit.toString());
-                                    retVal[0] = stockUnit.getAdjustedClose();
-                                    break;
+                                if (Integer.parseInt(stockUnit.getDate().substring(0, 4)) == calendar.get(Calendar.YEAR)) {
+                                    stockPriceSum += stockUnit.getAdjustedClose();
+                                    stockUnitCount++;
+                                    System.out.println(stockUnit);
                                 }
                             }
+                            retVal[0] = stockPriceSum / stockUnitCount;
                         })
                         .onFailure(e -> handleFailure(e))
                         .fetch();
@@ -54,21 +57,25 @@ public class StockPriceReader {
             }
             case MONTH: {
                 calendar.add(Calendar.MONTH, -amount);
-                String reformattedDate = (new SimpleDateFormat("yyyy-MM-dd HH:mm:ss")).format(calendar.getTime()); //Formats date into "yyyy-MM-dd HH:mm:ss" format
+                System.out.println(amount + " months before: " + (calendar.get(Calendar.MONTH) + 1));
+
                 AlphaVantage.api()
                         .timeSeries()
-                        .weekly()
+                        .daily()
                         .adjusted()
                         .forSymbol(tickerSymbol)
+                        .outputSize(OutputSize.FULL)
                         .onSuccess(e -> {
-                            System.out.println(amount + " month before: " + reformattedDate);
+                            double stockPriceSum = 0;
+                            int stockUnitCount = 0;
                             for (StockUnit stockUnit : ((TimeSeriesResponse) e).getStockUnits()) {
-                                if (stockUnit.getDate().compareTo(reformattedDate) <= 0) {
-                                    System.out.println(stockUnit.toString());
-                                    retVal[0] = stockUnit.getAdjustedClose();
-                                    break;
+                                if (Integer.parseInt(stockUnit.getDate().substring(5, 7)) == (calendar.get(Calendar.MONTH) + 1) && Integer.parseInt(stockUnit.getDate().substring(0, 4)) == calendar.get(Calendar.YEAR)) {
+                                    stockPriceSum += stockUnit.getAdjustedClose();
+                                    stockUnitCount++;
+                                    System.out.println(stockUnit);
                                 }
                             }
+                            retVal[0] = stockPriceSum / stockUnitCount;
                         })
                         .onFailure(e -> handleFailure(e))
                         .fetch();
@@ -104,6 +111,8 @@ public class StockPriceReader {
                 String reformattedDate = (new SimpleDateFormat("yyyy-MM-dd HH:mm:ss")).format(calendar.getTime()); //Formats date into "yyyy-MM-dd HH:mm:ss" format
                 reformattedDate = reformattedDate.substring(0, 11) + calendar.get(Calendar.HOUR_OF_DAY) + reformattedDate.substring(13); //Converts to 24 hr time
                 String finalReformattedDate = reformattedDate;
+                System.out.println(amount + " hours before: " + finalReformattedDate);
+
                 AlphaVantage.api()
                         .timeSeries()
                         .intraday()
@@ -111,7 +120,6 @@ public class StockPriceReader {
                         .outputSize(OutputSize.FULL)
                         .interval(Interval.FIVE_MIN)
                         .onSuccess(e -> {
-//                            System.out.println(amount + " hours before: " + finalReformattedDate);
                             for (StockUnit stockUnit : ((TimeSeriesResponse) e).getStockUnits()) {
                                 if (stockUnit.getDate().compareTo(finalReformattedDate) <= 0) {
                                     retVal[0] = stockUnit.getClose();
@@ -128,6 +136,8 @@ public class StockPriceReader {
                 String reformattedDate = (new SimpleDateFormat("yyyy-MM-dd HH:mm:ss")).format(calendar.getTime()); //Formats date into "yyyy-MM-dd HH:mm:ss" format
                 reformattedDate = reformattedDate.substring(0, 11) + calendar.get(Calendar.HOUR_OF_DAY) + reformattedDate.substring(13); //Converts to 24 hr time
                 String finalReformattedDate = reformattedDate;
+                System.out.println(amount + " minutes before: " + finalReformattedDate);
+
                 AlphaVantage.api()
                         .timeSeries()
                         .intraday()
@@ -135,7 +145,6 @@ public class StockPriceReader {
                         .outputSize(OutputSize.FULL)
                         .interval(Interval.ONE_MIN)
                         .onSuccess(e -> {
-//                            System.out.println(amount +" hour before: " + finalReformattedDate);
                             for (StockUnit stockUnit : ((TimeSeriesResponse) e).getStockUnits()) {
                                 if (stockUnit.getDate().compareTo(finalReformattedDate) <= 0) {
                                     retVal[0] = stockUnit.getClose();
