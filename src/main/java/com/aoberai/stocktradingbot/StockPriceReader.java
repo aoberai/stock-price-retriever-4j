@@ -24,13 +24,17 @@ public class StockPriceReader {
         return sInstance;
     }
 
+    public enum TimePeriod {
+        PRICE_YEAR, PRICE_MONTH, PRICE_DAY, PRICE_HOUR, PRICE_MINUTE, PRICE_NOW, CHANGE_NOW;
+    }
+
     public double getStockPrice(TimePeriod timePeriod, String tickerSymbol, int amount) {
         Timer.delay(Constants.API_CALL_INTERVAL); //Buffer period to prevent going over free api call limit.
         Calendar calendar = Calendar.getInstance();
         calendar.setTime(new Date()); //Sets time to current time
         double[] retVal = {0};
         switch (timePeriod) {
-            case YEAR: {
+            case PRICE_YEAR: {
                 calendar.add(Calendar.YEAR, -amount);
                 System.out.println(amount + " years before: " + calendar.get(Calendar.YEAR));
 
@@ -55,7 +59,7 @@ public class StockPriceReader {
                         .fetch();
                 break;
             }
-            case MONTH: {
+            case PRICE_MONTH: {
                 calendar.add(Calendar.MONTH, -amount);
                 System.out.println(amount + " months before: " + (calendar.get(Calendar.MONTH) + 1));
 
@@ -81,7 +85,7 @@ public class StockPriceReader {
                         .fetch();
                 break;
             }
-            case DAY: {
+            case PRICE_DAY: {
                 calendar.add(Calendar.DATE, -amount);
                 String reformattedDate = (new SimpleDateFormat("yyyy-MM-dd HH:mm:ss")).format(calendar.getTime()); //Formats date into "yyyy-MM-dd HH:mm:ss" format
                 reformattedDate = reformattedDate.substring(0, 11) + calendar.get(Calendar.HOUR_OF_DAY) + reformattedDate.substring(13); //Converts to 24 hr time
@@ -106,7 +110,7 @@ public class StockPriceReader {
                         .fetch();
                 break;
             }
-            case HOUR: {
+            case PRICE_HOUR: {
                 calendar.add(Calendar.HOUR, -amount);
                 String reformattedDate = (new SimpleDateFormat("yyyy-MM-dd HH:mm:ss")).format(calendar.getTime()); //Formats date into "yyyy-MM-dd HH:mm:ss" format
                 reformattedDate = reformattedDate.substring(0, 11) + calendar.get(Calendar.HOUR_OF_DAY) + reformattedDate.substring(13); //Converts to 24 hr time
@@ -131,7 +135,7 @@ public class StockPriceReader {
                         .fetch();
                 break;
             }
-            case MINUTE: {
+            case PRICE_MINUTE: {
                 calendar.add(Calendar.MINUTE, -amount);
                 String reformattedDate = (new SimpleDateFormat("yyyy-MM-dd HH:mm:ss")).format(calendar.getTime()); //Formats date into "yyyy-MM-dd HH:mm:ss" format
                 reformattedDate = reformattedDate.substring(0, 11) + calendar.get(Calendar.HOUR_OF_DAY) + reformattedDate.substring(13); //Converts to 24 hr time
@@ -156,7 +160,7 @@ public class StockPriceReader {
                         .fetch();
                 break;
             }
-            case NOW: {
+            case PRICE_NOW: {
                 AlphaVantage.api()
                         .timeSeries()
                         .quote()
@@ -169,6 +173,18 @@ public class StockPriceReader {
                         .fetch();
                 break;
             }
+            case CHANGE_NOW: {
+                AlphaVantage.api()
+                        .timeSeries()
+                        .quote()
+                        .forSymbol(tickerSymbol)
+                        .dataType(DataType.JSON)
+                        .onSuccess(e -> {
+                            retVal[0] = ((QuoteResponse) e).getChangePercent();
+                        })
+                        .onFailure(e -> handleFailure(e))
+                        .fetch();
+            }
         }
         Timer.delay(Constants.API_CALL_INTERVAL); //Buffer period to prevent going over free api call limit.
         return retVal[0];
@@ -177,9 +193,5 @@ public class StockPriceReader {
     public void handleFailure(AlphaVantageException error) {
         System.out.println("Doesn't function");
         System.out.println(error.getMessage());
-    }
-
-    public enum TimePeriod {
-        YEAR, MONTH, DAY, HOUR, MINUTE, NOW;
     }
 }
